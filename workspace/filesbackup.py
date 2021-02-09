@@ -12,20 +12,18 @@ def main():
     ftp = FTP(config.server['ip'])
     ftp.login(user=config.server['username'], passwd=config.server['password'])
 
-    now = datetime.now()
+#    now = datetime.now()
+    now = datetime(2020, 1, 18)
+    print(now)
+    files = []
 
     for filename in config.filenames:
-#        size = ftp.size(filename)
-#        modification_time = ftp.sendcmd('MDTM ' + filename)
-#        modification_time = datetime.strptime(modification_time[4:], "%Y%m%d%H%M%S").strftime("%d %B %Y %H:%M:%S")
-#        print(f'{filename}:\t{size}\t{modification_time}')
-#        remote_modification = ftp.voidcmd("MDTM " + filename)
-#        modification_time = datetime.strptime(remote_modification[4:], "%Y%m%d%H%M%S")
-#        print(f'Remote file: {modification_time} /Diff: {now - modification_time}')
-
-    
         file = File(filename, ftp.size(filename), datetime.strptime(ftp.sendcmd('MDTM ' + filename)[4:], "%Y%m%d%H%M%S"))
-        print(file)
+        files.append(file)
+
+    for file in files:
+        if (file.modiffication_time + timedelta(days=1)) < now:
+            print(f'{file.filename} file not modiffied in last 24 hours. Last modiffication: {file.modiffication_time}.')
 
 
 
