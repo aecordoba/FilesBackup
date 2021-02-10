@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 # filesbackup.py
 """Application for check the files status and guard them from a server."""
-from ftplib import FTP
-from datetime import datetime
-from datetime import timedelta
-import tkinter as tk
-from tkinter import ttk
+import shutil
 import os
+import tkinter as tk
+from datetime import datetime, timedelta
+from ftplib import FTP
 from pathlib import Path
-from file import File
+from tkinter import ttk
+from pytz import timezone
+
 import config
+from file import File
 
 DAYS_OF_WEEK = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 
@@ -17,7 +19,7 @@ def main():
     ftp = FTP(config.server['ip'])
     ftp.login(user=config.server['username'], passwd=config.server['password'])
 
-    now = datetime.now()
+    now = datetime.now(timezone('America/Argentina/Buenos_Aires'))
     print(f'{now}: Backup in progress...')
     files = []
 
@@ -26,15 +28,15 @@ def main():
         files.append(file)
 
     for file in files:
-        if (file.modiffication_time + timedelta(days=1)) < now:
-            print(f'{file.filename} file not modiffied in last 24 hours. Last modiffication: {file.modiffication_time}.')
-            popup_message("WARNING!", f'{file.filename} file not modiffied in last 24 hours.\nLast modiffication: {file.modiffication_time}.')
+        if (file.modification_time + timedelta(days=1)) < now:
+            print(f'{file.filename} file not modified in last 24 hours. Last modification: {file.modiffication_time}.')
+            popup_message("WARNING!", f'{file.filename} file not modified in last 24 hours.\nLast modification: {file.modification_time}.')
         else:
             localfile = open(file.filename, 'wb')
             ftp.retrbinary('RETR ' + file.filename, localfile.write, 1024)
             localfile.close()
             if file.size == os.path.getsize(file.filename):
-                os.rename(file.filename, f'/backup/sgi_backup/{DAYS_OF_WEEK[file.modiffication_time.weekday()]}/{file.filename}')
+                shutil.move(file.filename, f'/backup/sgi_backup/{DAYS_OF_WEEK[file.modification_time.weekday()]}/{file.filename}')
                 print(f'Successfully downloaded {file.filename} ({file.size} bytes).')
             else:
                 popup_message("WARNING!", f'{file.filename} file couldn\'t be downloaded.\nOriginal file size: {file.size}.\nDownloaded file size: {os.path.getsize(file.filename)}')

@@ -1,12 +1,13 @@
 # file.py
 """File class definition."""
+from pytz import timezone
 
 class File:
     """Hold files data."""
-    def __init__(self, filename, size, modiffication_time):
+    def __init__(self, filename, size, modification_time):
         self._filename = filename
         self._size = size
-        self._modiffication_time = modiffication_time
+        self.modification_time = modification_time
 
     @property
     def filename(self):
@@ -17,13 +18,18 @@ class File:
         return self._size
 
     @property
-    def modiffication_time(self):
-        return self._modiffication_time
+    def modification_time(self):
+        return self._modification_time
     
+    @modification_time.setter
+    def modification_time(self, modification_time):
+        self._modification_time = (modification_time.replace(tzinfo=timezone('UTC'))).astimezone(timezone('America/Argentina/Buenos_Aires'))
+
+
     def __repr__(self):
         return ('File: ' + f'{self.filename}\n' +
         f'\tsize: {self.size}\n' +
-        f'\tlast modiffication: {self.modiffication_time}')
+        f'\tlast modification: {self.modification_time}')
 
     def __str__(self):
-        return ('File: ' + f'{self.filename} (size: {self.size}, last modiffication: {self.modiffication_time})')
+        return ('File: ' + f'{self.filename} (size: {self.size}, last modification: {self.modification_time})')
