@@ -29,7 +29,7 @@ def main():
 
     for file in files:
         if (file.modification_time + timedelta(days=1)) < now:
-            print(f'{file.filename} file not modified in last 24 hours. Last modification: {file.modiffication_time}.')
+            print(f'{file.filename} file not modified in last 24 hours. Last modification: {file.modification_time}.')
             popup_message("WARNING!", f'{file.filename} file not modified in last 24 hours.\nLast modification: {file.modification_time}.')
         else:
             localfile = open(file.filename, 'wb')
