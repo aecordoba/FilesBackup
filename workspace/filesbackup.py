@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # filesbackup.py
 """Application for check the files status and guard them from a server."""
+
 import shutil
 import os
 import ftplib
