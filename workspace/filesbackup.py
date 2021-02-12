@@ -3,6 +3,7 @@
 """Application for check the files status and guard them from a server."""
 import shutil
 import os
+import ftplib
 from datetime import datetime, timedelta
 from ftplib import FTP
 from pathlib import Path
@@ -31,19 +32,16 @@ def main():
 
         for file in files:
             if (file.modification_time + timedelta(days=1)) < now:
-                print(
-                    f'{file.filename} file not modified in last 24 hours. Last modification: {file.modification_time}.')
+                print(f'{file.filename} file not modified in last 24 hours. Last modification: {file.modification_time}.')
             else:
                 localfile = open(file.filename, 'wb')
                 ftp.retrbinary('RETR ' + file.filename, localfile.write, 1024)
                 localfile.close()
                 if file.size == os.path.getsize(file.filename):
-                    print(
-                        f'Successfully downloaded {file.filename} ({file.size} bytes).')
+                    print(f'Successfully downloaded {file.filename} ({file.size} bytes).')
                     shutil.move(
-                        file.filename, f'/backup/sgi_backup/{DAYS_OF_WEEK[file.modification_time.weekday()]}/{file.filename}')
-                    print(
-                        f'{file.filename} successfully moved to /backup/sgi_backup/{DAYS_OF_WEEK[file.modification_time.weekday()]}/.')
+                        file.filename, f'{config.base_directory}{DAYS_OF_WEEK[file.modification_time.weekday()]}/{file.filename}')
+                    print(f'{file.filename} successfully moved to {config.base_directory}{DAYS_OF_WEEK[file.modification_time.weekday()]}/.')
                 else:
                     print(f'{file.filename} file couldn\'t be downloaded.\n\tOriginal file size: {file.size}.\n\tDownloaded file size: {os.path.getsize(file.filename)}')
 
