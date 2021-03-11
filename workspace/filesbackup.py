@@ -18,12 +18,12 @@ DAYS_OF_WEEK = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 
 
 def main():
+    now = datetime.now(timezone('America/Argentina/Buenos_Aires'))
     try:
         ftp = FTP(config.server['ip'])
         ftp.login(user=config.server['username'],
                   passwd=config.server['password'])
 
-        now = datetime.now(timezone('America/Argentina/Buenos_Aires'))
         print(f'{now}: Backup in progress...')
         files = []
 
@@ -61,7 +61,7 @@ def main():
         ftp.quit()
 
     except ftplib.all_errors as e:
-        print("FTP error:", e)
+        print(f'{now}: FTP error:', e)
 
 
 # call main().
