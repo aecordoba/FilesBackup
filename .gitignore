@@ -1,3 +1,5 @@
 config.py
-workspace/__pycache__/
+venv/
+.idea/
+
 
