@@ -37,6 +37,7 @@ def main():
                 print(
                     f'{file.filename} file not modified in last 24 hours. Last modification: {file.modification_time}.')
             else:
+                print(f'{file} was found.')
                 localfile = open(file.filename, 'wb')
                 ftp.retrbinary('RETR ' + file.filename, localfile.write, 1024)
                 localfile.close()
