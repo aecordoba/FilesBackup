@@ -7,10 +7,7 @@ import os
 import shutil
 from datetime import datetime, timedelta
 from ftplib import FTP
-from pathlib import Path
-
 from pytz import timezone
-
 import config
 from file import File
 
@@ -22,7 +19,7 @@ def main():
     try:
         ftp = FTP(config.server['ip'])
         ftp.login(user=config.server['username'],
-                  passwd=config.server['password'])
+            passwd=config.server['password'])
 
         print(f'{now}: Backup in progress...')
         files = []
@@ -41,18 +38,18 @@ def main():
                 localfile = open(file.filename, 'wb')
                 ftp.retrbinary('RETR ' + file.filename, localfile.write, 1024)
                 localfile.close()
-                if file.size == os.path.getsize(file.filename):
+                if file.size==os.path.getsize(file.filename):
                     print(
                         f'Successfully downloaded {file.filename} ({file.size} bytes).')
 
                     destination = config.base_directory
-                    if file.modification_time.day == 1:
+                    if file.modification_time.day==1:
                         destination += "1st/"
-                    elif file.modification_time.day == 15:
+                    elif file.modification_time.day==15:
                         destination += "15th/"
                     else:
                         destination += DAYS_OF_WEEK[file.modification_time.weekday()] + \
-                            "/"
+                                       "/"
 
                     shutil.move(file.filename, f'{destination}{file.filename}')
                     print(f'{file.filename} successfully moved to {destination}.')
@@ -66,5 +63,5 @@ def main():
 
 
 # call main().
-if __name__ == '__main__':
+if __name__=='__main__':
     main()
