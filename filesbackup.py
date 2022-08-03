@@ -54,7 +54,7 @@ def main():
         ftp.quit()
 
     except all_errors as e:
-        print(now, ": FTP error: ", e, sep='')
+        print(now, ": Error: ", e, sep='')
 
 
 # call main().
